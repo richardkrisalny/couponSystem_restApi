@@ -3,13 +3,8 @@ package app.core.services;
 import app.core.entites.Category;
 import app.core.entites.Company;
 import app.core.entites.Coupon;
-import app.core.entites.Customer;
 import app.core.exeptions.ClientServiceException;
-import app.core.repositories.CompanyRepo;
-import app.core.repositories.CouponRepo;
-import app.core.repositories.CustomerRepo;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,6 +37,7 @@ public class CompanyService extends ClientService{
     public void addCoupon(Coupon coupon) throws ClientServiceException {
         if(couponRepo.findByTitleAndCompanyID(coupon.getTitle(),companyID).isEmpty()){
             couponRepo.save(coupon);
+            getCompanyDetails().getCoupons().add(coupon);
         }else{
             throw new ClientServiceException("the company: "+companyID+" have coupon with same title");
         }
@@ -87,7 +83,7 @@ public class CompanyService extends ClientService{
      * get all company coupons
      * @return list of coupons
      */
-    public List<Coupon> CompanyCoupons(){
+    public List<Coupon> companyCoupons(){
         return couponRepo.findByCompanyID(companyID);
     }
     /**
@@ -95,7 +91,7 @@ public class CompanyService extends ClientService{
      * @param category the category
      * @return list of coupons
      */
-    public List<Coupon> CompanyCoupons(Category category){
+    public List<Coupon> companyCoupons(Category category){
         return couponRepo.findByCompanyIDAndCategory(companyID,category);
     }
     /**
@@ -103,7 +99,7 @@ public class CompanyService extends ClientService{
      * @param maxPrice the maximum price
      * @return list of coupons
      */
-    public List<Coupon> CompanyCoupons(double maxPrice){
+    public List<Coupon> companyCoupons(double maxPrice){
         return couponRepo.findByCompanyIDAndPriceLessThan(companyID,maxPrice);
     }
     /**
@@ -111,7 +107,11 @@ public class CompanyService extends ClientService{
      * @return company
      */
     public Company getCompanyDetails(){
-        AdminService adminService = new AdminService();
-        return adminService.getOneCompany(companyID);
+        Optional<Company>opt=companyRepo.findById(companyID);
+        if(opt.isPresent()){
+            return opt.get();
+        }else{
+            throw new ClientServiceException("the company not exist");
+        }
     }
 }

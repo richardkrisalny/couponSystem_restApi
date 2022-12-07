@@ -22,12 +22,14 @@ public class Coupon {
     private Category category;
     private String title;
     private String description;
-    public LocalDate startDate;
-    public LocalDate endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private int amount;
     private double price;
     private String image;
     @ManyToMany
     @JoinTable(name = "customers_vs_coupons",joinColumns = @JoinColumn(name = "coupon_id"),inverseJoinColumns = @JoinColumn(name = "customer_id"))
     private List<Customer> customers;
+
+
 }

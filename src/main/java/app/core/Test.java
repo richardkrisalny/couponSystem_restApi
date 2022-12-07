@@ -1,6 +1,7 @@
 package app.core;
 
 import app.core.entites.Company;
+import app.core.entites.Coupon;
 import app.core.entites.Customer;
 import app.core.services.AdminService;
 import app.core.services.CompanyService;
@@ -49,7 +50,7 @@ public class Test implements CommandLineRunner {
         System.out.println(adminService.getOneCustomer(1));
         System.out.println("----------------------------------------\n\n");
 
-
+        System.out.println(companyService.login("bbb@gmail.com","qwer"));
 
     }
 }

@@ -57,13 +57,9 @@ public class CustomerService extends ClientService{
      * @return list of coupons
      */
     public List<Coupon>getCustomerCoupons(Category category){
-        List<Coupon>couponsToReturn=new ArrayList<>();
         List<Coupon>coupons=getCustomerCoupons();
-        for (int i = 0; i < coupons.size(); i++) {
-            if (coupons.get(i).getCategory()==category){
-                couponsToReturn.add(coupons.get(i));
-            }
-        }return couponsToReturn;
+        coupons.removeIf((x)->x.getCategory()!=category);
+        return coupons;
     }
 
     /**
@@ -72,13 +68,9 @@ public class CustomerService extends ClientService{
      * @return list of coupons
      */
     public List<Coupon>getCustomerCoupons(double maxPrice){
-        List<Coupon>couponsToReturn=new ArrayList<>();
         List<Coupon>coupons=getCustomerCoupons();
-        for (int i = 0; i < coupons.size(); i++) {
-            if (coupons.get(i).getPrice()<maxPrice){
-                couponsToReturn.add(coupons.get(i));
-            }
-        }return couponsToReturn;
+        coupons.removeIf((x)->x.getPrice()>maxPrice);
+        return coupons;
     }
 
     /**

@@ -73,12 +73,7 @@ public class CompanyService extends ClientService{
      * @param couponID coupon id to delete
      */
     public void deleteCoupon(int couponID) throws ClientServiceException {
-        Optional<Coupon>opt=couponRepo.findById(couponID);
-        if(opt.isPresent()){
-            couponRepo.delete(opt.get());
-        }else{
-            throw new ClientServiceException("the coupon not exist");
-        }
+            couponRepo.delete(couponRepo.findById(couponID).orElseThrow(()->new ClientServiceException("the coupon not exist")));
     }
 
     /**
@@ -109,11 +104,6 @@ public class CompanyService extends ClientService{
      * @return company
      */
     public Company getCompanyDetails(){
-        Optional<Company>opt=companyRepo.findById(companyID);
-        if(opt.isPresent()){
-            return opt.get();
-        }else{
-            throw new ClientServiceException("the company not exist");
-        }
+            return companyRepo.findById(companyID).orElseThrow(()->new ClientServiceException("the company not exist"));
     }
 }

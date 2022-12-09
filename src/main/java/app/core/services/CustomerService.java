@@ -39,13 +39,8 @@ public class CustomerService extends ClientService{
      * @param couponID coupon id
      */
     public void purchase(int couponID) throws ClientServiceException {
-        Optional<Customer>optionalCustomer=customerRepo.findById(customerID);
-        Optional<Coupon>optionalCoupon=couponRepo.findById(couponID);
-        if(optionalCustomer.isPresent()&&optionalCoupon.isPresent()){
-            optionalCustomer.get().getCoupons().add(optionalCoupon.get());
-        }else{
-            throw new ClientServiceException("the coupon or customer is not exist");
-        }
+            customerRepo.findById(customerID).orElseThrow(()->new ClientServiceException("the coupon or customer is not exist"))
+                    .getCoupons().add(couponRepo.findById(couponID).orElseThrow(()->new ClientServiceException("the coupon or customer is not exist")));
     }
 
     /**
@@ -53,12 +48,7 @@ public class CustomerService extends ClientService{
      * @return list of coupons
      */
     public List<Coupon> getCustomerCoupons(){
-        Optional<Customer>optionalCustomer=customerRepo.findById(customerID);
-        if(optionalCustomer.isPresent()){
-            return optionalCustomer.get().getCoupons();
-        }else{
-            throw new ClientServiceException("the coupon or customer is not exist");
-        }
+            return customerRepo.findById(customerID).orElseThrow(()->new ClientServiceException("the coupon or customer is not exist")).getCoupons();
     }
 
     /**
@@ -96,12 +86,7 @@ public class CustomerService extends ClientService{
      * @return customer
      */
     public Customer getCustomerDetails(){
-        Optional<Customer>optionalCustomer=customerRepo.findById(customerID);
-        if(optionalCustomer.isPresent()){
-            return optionalCustomer.get();
-        }else {
-            throw new ClientServiceException("the customer not exist");
-        }
+            return customerRepo.findById(customerID).orElseThrow(()->new ClientServiceException("the customer not exist"));
     }
 
 }

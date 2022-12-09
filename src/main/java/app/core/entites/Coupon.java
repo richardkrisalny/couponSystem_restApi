@@ -27,7 +27,7 @@ public class Coupon {
     private int amount;
     private double price;
     private String image;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "customers_vs_coupons",joinColumns = @JoinColumn(name = "coupon_id"),inverseJoinColumns = @JoinColumn(name = "customer_id"))
     private List<Customer> customers;
 

@@ -65,12 +65,7 @@ public class AdminService extends ClientService {
      * @param companyID the company to delete
      */
     public void deleteCompany(int companyID) throws ClientServiceException{
-        Optional<Company>opt=companyRepo.findById(companyID);
-        if(opt.isPresent()){
-            companyRepo.delete(opt.get());
-        }else{
-            throw new ClientServiceException("the company not exist");
-        }
+            companyRepo.delete(companyRepo.findById(companyID).orElseThrow(()->new ClientServiceException("the company not exist")));
     }
 
     /**
@@ -87,12 +82,7 @@ public class AdminService extends ClientService {
      * @return the company from database (with company coupon's)
      */
     public Company getOneCompany(int companyID)throws ClientServiceException{
-        Optional<Company>opt=companyRepo.findById(companyID);
-        if(opt.isPresent()){
-            return opt.get();
-        }else{
-            throw new ClientServiceException("the company not exist");
-        }
+            return companyRepo.findById(companyID).orElseThrow(()->new ClientServiceException("the company not exist"));
     }
 
     /**
@@ -112,17 +102,13 @@ public class AdminService extends ClientService {
      * @param customer the customer to update
      */
     public void updateCustomer(Customer customer) throws ClientServiceException {
-        Optional<Customer>opt=customerRepo.findById(customer.getId());
-        if(opt.isPresent()){
-            opt.get().setCoupons(customer.getCoupons());
-            opt.get().setPassword(customer.getPassword());
-            opt.get().setEmail(customer.getEmail());
-            opt.get().setFirstName(customer.getFirstName());
-            opt.get().setLastName(customer.getLastName());
-            customerRepo.save(opt.get());
-        }else{
-            throw new ClientServiceException("the customer not found ");
-        }
+        Customer opt=customerRepo.findById(customer.getId()).orElseThrow(()->new ClientServiceException("the customer not found "));
+            opt.setCoupons(customer.getCoupons());
+            opt.setPassword(customer.getPassword());
+            opt.setEmail(customer.getEmail());
+            opt.setFirstName(customer.getFirstName());
+            opt.setLastName(customer.getLastName());
+            customerRepo.save(opt);
     }
 
     /**
@@ -130,12 +116,7 @@ public class AdminService extends ClientService {
      * @param customerID the customer id
      */
     public void deleteCustomer(int customerID) throws ClientServiceException{
-        Optional<Customer>opt=customerRepo.findById(customerID);
-        if(opt.isPresent()){
-            customerRepo.delete(opt.get());
-        }else{
-            throw new ClientServiceException("the customer not exist");
-        }
+            customerRepo.delete(customerRepo.findById(customerID).orElseThrow(()->new ClientServiceException("the customer not exist")));
     }
     /**
      * get all customers from database
@@ -151,11 +132,6 @@ public class AdminService extends ClientService {
      * @return the specific customer
      */
     public Customer getOneCustomer(int customerID) throws ClientServiceException{
-        Optional<Customer>opt=customerRepo.findById(customerID);
-        if(opt.isPresent()){
-            return opt.get();
-        }else{
-            throw new ClientServiceException("the customer not exist");
-        }
+            return customerRepo.findById(customerID).orElseThrow(()->new ClientServiceException("the customer not exist"));
     }
 }

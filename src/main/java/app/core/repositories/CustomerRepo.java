@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CustomerRepo extends JpaRepository<Customer,Integer> {
-    List<Customer> findByEmailAndPassword(String email, String password);
-    List<Customer> findByEmail(String email);
+    Customer findByEmailAndPassword(String email, String password);
+    boolean existsByEmail(String email);
 }

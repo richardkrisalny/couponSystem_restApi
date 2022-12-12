@@ -36,7 +36,7 @@ public class AdminService extends ClientService {
      * @param company the company to add
      */
     public void addCompany(Company company) throws ClientServiceException {
-        if(companyRepo.findByEmailOrName(company.getEmail(),company.getName()).isEmpty()){
+        if(!companyRepo.existsByEmailOrName(company.getEmail(), company.getName())){
             companyRepo.save(company);
         }else{
             throw new ClientServiceException("the company already exist");
@@ -51,10 +51,7 @@ public class AdminService extends ClientService {
     public void updateCompany(Company company) throws ClientServiceException {
         Optional<Company>opt=companyRepo.findById(company.getId());
         if(opt.isPresent()&& Objects.equals(opt.get().getName(), company.getName())){
-            opt.get().setEmail(company.getEmail());
-            opt.get().setPassword(company.getPassword());
-            opt.get().setCoupons(company.getCoupons());
-            companyRepo.save(opt.get());
+            companyRepo.save(company);
         }else{
             throw new ClientServiceException("the company not exist or the name not the same");
         }
@@ -90,7 +87,7 @@ public class AdminService extends ClientService {
      * @param customer the customer to add
      */
     public void addCustomer(Customer customer) throws ClientServiceException {
-        if(customerRepo.findByEmail(customer.getEmail()).isEmpty()){
+        if(!customerRepo.existsByEmail(customer.getEmail())){
             customerRepo.save(customer);
         }else{
             throw new ClientServiceException("the customer already exist");
@@ -102,13 +99,8 @@ public class AdminService extends ClientService {
      * @param customer the customer to update
      */
     public void updateCustomer(Customer customer) throws ClientServiceException {
-        Customer opt=customerRepo.findById(customer.getId()).orElseThrow(()->new ClientServiceException("the customer not found "));
-            opt.setCoupons(customer.getCoupons());
-            opt.setPassword(customer.getPassword());
-            opt.setEmail(customer.getEmail());
-            opt.setFirstName(customer.getFirstName());
-            opt.setLastName(customer.getLastName());
-            customerRepo.save(opt);
+        customerRepo.findById(customer.getId()).orElseThrow(()->new ClientServiceException("the customer not found "));
+        customerRepo.save(customer);
     }
 
     /**

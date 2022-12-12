@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CompanyRepo extends JpaRepository<Company,Integer> {
-    List<Company> findByEmailAndPassword(String email,String password);
-    List<Company> findByEmailOrName(String email,String name);
+    Company findByEmailAndPassword(String email,String password);
+   boolean existsByEmailOrName(String email,String name);
 
 }

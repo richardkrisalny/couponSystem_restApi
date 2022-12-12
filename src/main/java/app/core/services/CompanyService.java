@@ -22,8 +22,8 @@ public class CompanyService extends ClientService{
      * @return true if company exist and false if not
      */
     public boolean login(String email, String password) {
-      if(!companyRepo.findByEmailAndPassword(email,password).isEmpty()) {
-          companyID = companyRepo.findByEmailAndPassword(email, password).get(0).getId();
+      if(companyRepo.findByEmailAndPassword(email,password)!=null) {
+          companyID = companyRepo.findByEmailAndPassword(email, password).getId();
           return true;
       }
       else
@@ -35,7 +35,7 @@ public class CompanyService extends ClientService{
      * @param coupon the coupon to add
      */
     public void addCoupon(Coupon coupon) throws ClientServiceException {
-        if(couponRepo.findByTitleAndCompanyID(coupon.getTitle(),companyID).isEmpty()){
+        if(!couponRepo.existsByTitleAndCompanyID(coupon.getTitle(),companyID)){
             coupon.setCompanyID(companyID);
             couponRepo.save(coupon);
             getCompanyDetails().getCoupons().add(coupon);
@@ -51,18 +51,9 @@ public class CompanyService extends ClientService{
      */
     public void updateCoupon(Coupon coupon) throws ClientServiceException {
         Optional<Coupon>opt=couponRepo.findById(coupon.getId());
-        if(opt.isPresent()&&couponRepo.findByTitleAndCompanyID(coupon.getTitle(),companyID).isEmpty()){
+        if(opt.isPresent()&&!couponRepo.existsByTitleAndCompanyID(coupon.getTitle(),companyID)){
             coupon.setCompanyID(companyID);
-            opt.get().setAmount(coupon.getAmount());
-            opt.get().setCategory(coupon.getCategory());
-            opt.get().setCustomers(coupon.getCustomers());
-            opt.get().setImage(coupon.getImage());
-            opt.get().setTitle(coupon.getTitle());
-            opt.get().setEndDate(coupon.getEndDate());
-            opt.get().setStartDate(coupon.getStartDate());
-            opt.get().setPrice(coupon.getPrice());
-            opt.get().setDescription(coupon.getDescription());
-            couponRepo.save(opt.get());
+            couponRepo.save(coupon);
         }else{
             throw new ClientServiceException("the company id is not the same or coupon not exist");
         }

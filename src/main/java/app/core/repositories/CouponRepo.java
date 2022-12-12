@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface CouponRepo extends JpaRepository<Coupon,Integer> {
-    List<Coupon> findByTitleAndCompanyID(String title, int id);
+    boolean existsByTitleAndCompanyID(String title, int id);
     List<Coupon> findByCompanyID(int id);
     List<Coupon> findByCompanyIDAndCategory(int id, Category category);
     List<Coupon> findByCompanyIDAndPriceLessThan(int id,double maxPrice);

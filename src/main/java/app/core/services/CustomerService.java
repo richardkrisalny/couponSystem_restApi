@@ -27,8 +27,8 @@ public class CustomerService extends ClientService{
      * @return true if customer exist , else return false
      */
     public boolean login(String email, String password) {
-       if(!customerRepo.findByEmailAndPassword(email, password).isEmpty()){
-           customerID=customerRepo.findByEmailAndPassword(email, password).get(0).getId();
+       if(customerRepo.findByEmailAndPassword(email, password)!=null){
+           customerID=customerRepo.findByEmailAndPassword(email, password).getId();
            return true;
        }else {
            return false;

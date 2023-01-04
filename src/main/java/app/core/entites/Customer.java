@@ -24,4 +24,11 @@ public class Customer {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "customers_vs_coupons",joinColumns = @JoinColumn(name = "customer_id"),inverseJoinColumns = @JoinColumn(name = "coupon_id"))
     private List<Coupon> coupons=new ArrayList<>();
+    public void addCoupon(Coupon coupon){
+        if (coupons ==null){
+            coupons=new ArrayList<>();
+        }
+        coupon.addCustomer(this);
+        coupons.add(coupon);
+    }
 }

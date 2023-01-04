@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -30,6 +31,13 @@ public class Coupon {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "customers_vs_coupons",joinColumns = @JoinColumn(name = "coupon_id"),inverseJoinColumns = @JoinColumn(name = "customer_id"))
     private List<Customer> customers;
+
+    public void addCustomer(Customer customer){
+        if (customers ==null){
+            customers=new ArrayList<>();
+        }
+        customers.add(customer);
+    }
 
 
 }

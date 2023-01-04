@@ -8,6 +8,7 @@ import app.core.repositories.CouponRepo;
 import app.core.repositories.CustomerRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@Scope("prototype")
 public class AdminService extends ClientService {
     public static final String EMAIL = "admin@admin.com";
     public static final String PASSWORD = "admin";

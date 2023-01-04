@@ -5,6 +5,7 @@ import app.core.entites.Company;
 import app.core.entites.Coupon;
 import app.core.exeptions.ClientServiceException;
 import jakarta.transaction.Transactional;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@Scope("prototype")
 public class CompanyService extends ClientService{
     private int companyID;
 

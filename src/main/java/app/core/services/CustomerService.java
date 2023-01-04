@@ -9,6 +9,7 @@ import app.core.repositories.CouponRepo;
 import app.core.repositories.CustomerRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.css.Counter;
 
@@ -18,6 +19,8 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@Scope("prototype")
+
 public class CustomerService extends ClientService{
     private int customerID;
     /**
@@ -57,9 +60,13 @@ public class CustomerService extends ClientService{
      * @return list of coupons
      */
     public List<Coupon>getCustomerCoupons(Category category){
+        List<Coupon>couponsToReturn=new ArrayList<>();
         List<Coupon>coupons=getCustomerCoupons();
-        coupons.removeIf((x)->x.getCategory()!=category);
-        return coupons;
+        for (int i = 0; i < coupons.size(); i++) {
+            if(coupons.get(i).getCategory()==category)
+                couponsToReturn.add(coupons.get(i));
+        }
+        return couponsToReturn;
     }
 
     /**
@@ -68,9 +75,13 @@ public class CustomerService extends ClientService{
      * @return list of coupons
      */
     public List<Coupon>getCustomerCoupons(double maxPrice){
+        List<Coupon>couponsToReturn=new ArrayList<>();
         List<Coupon>coupons=getCustomerCoupons();
-        coupons.removeIf((x)->x.getPrice()>maxPrice);
-        return coupons;
+        for (int i = 0; i < coupons.size(); i++) {
+            if(coupons.get(i).getPrice()<maxPrice)
+                couponsToReturn.add(coupons.get(i));
+        }
+        return couponsToReturn;
     }
 
     /**

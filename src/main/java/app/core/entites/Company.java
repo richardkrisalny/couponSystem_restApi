@@ -19,7 +19,7 @@ public class Company {
     private String name;
     private String email;
     private String password;
-    @OneToMany()
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "company_id")
    private List<Coupon> coupons=new ArrayList<>();
 }

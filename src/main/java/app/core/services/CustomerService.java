@@ -4,18 +4,13 @@ import app.core.entites.Category;
 import app.core.entites.Coupon;
 import app.core.entites.Customer;
 import app.core.exeptions.ClientServiceException;
-import app.core.repositories.CompanyRepo;
-import app.core.repositories.CouponRepo;
-import app.core.repositories.CustomerRepo;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.css.Counter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -42,8 +37,17 @@ public class CustomerService extends ClientService{
      * @param couponID coupon id
      */
     public void purchase(int couponID) throws ClientServiceException {
-            customerRepo.findById(customerID).orElseThrow(()->new ClientServiceException("the coupon or customer is not exist"))
-                    .getCoupons().add(couponRepo.findById(couponID).orElseThrow(()->new ClientServiceException("the coupon or customer is not exist")));
+        Customer customer=customerRepo.findById(customerID).orElseThrow(()->new ClientServiceException("the customer is not exist"));
+        Coupon coupon = couponRepo.findById(couponID).orElseThrow(()->new ClientServiceException("the coupon is not exist"));
+        if(coupon.getAmount()>0&&coupon.getEndDate().isAfter(LocalDate.now())){
+            for (Coupon coup:customer.getCoupons()) {
+                if(coup.getId()==coupon.getId())
+                   throw new ClientServiceException("the customer already have this coupon");
+            }
+            customer.getCoupons().add(coupon);
+            coupon.setAmount(coupon.getAmount()-1);
+        }
+
     }
 
     /**

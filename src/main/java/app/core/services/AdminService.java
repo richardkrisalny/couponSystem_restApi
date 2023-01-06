@@ -3,12 +3,10 @@ package app.core.services;
 import app.core.entites.Company;
 import app.core.entites.Customer;
 import app.core.exeptions.ClientServiceException;
-import app.core.repositories.CompanyRepo;
-import app.core.repositories.CouponRepo;
-import app.core.repositories.CustomerRepo;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,9 +35,9 @@ public class AdminService extends ClientService {
      * if the not exist ,add the company
      * @param company the company to add
      */
-    public void addCompany(Company company) throws ClientServiceException {
+    public Company addCompany(Company company) throws ClientServiceException {
         if(!companyRepo.existsByEmailOrName(company.getEmail(), company.getName())){
-            companyRepo.save(company);
+            return companyRepo.save(company);
         }else{
             throw new ClientServiceException("the company already exist");
         }
@@ -50,10 +48,10 @@ public class AdminService extends ClientService {
      * find the company in database and update it
      * @param company the company to update
      */
-    public void updateCompany(Company company) throws ClientServiceException {
+    public Company updateCompany(Company company) throws ClientServiceException {
         Optional<Company>opt=companyRepo.findById(company.getId());
         if(opt.isPresent()&& Objects.equals(opt.get().getName(), company.getName())){
-            companyRepo.save(company);
+           return companyRepo.save(company);
         }else{
             throw new ClientServiceException("the company not exist or the name not the same");
         }
@@ -88,9 +86,9 @@ public class AdminService extends ClientService {
      * add customer to the database
      * @param customer the customer to add
      */
-    public void addCustomer(Customer customer) throws ClientServiceException {
+    public Customer addCustomer(Customer customer) throws ClientServiceException {
         if(!customerRepo.existsByEmail(customer.getEmail())){
-            customerRepo.save(customer);
+           return customerRepo.save(customer);
         }else{
             throw new ClientServiceException("the customer already exist");
         }
@@ -100,9 +98,9 @@ public class AdminService extends ClientService {
      * update customer in database
      * @param customer the customer to update
      */
-    public void updateCustomer(Customer customer) throws ClientServiceException {
+    public Customer updateCustomer(Customer customer) throws ClientServiceException {
         customerRepo.findById(customer.getId()).orElseThrow(()->new ClientServiceException("the customer not found "));
-        customerRepo.save(customer);
+        return customerRepo.save(customer);
     }
 
     /**
@@ -128,4 +126,5 @@ public class AdminService extends ClientService {
     public Customer getOneCustomer(int customerID) throws ClientServiceException{
             return customerRepo.findById(customerID).orElseThrow(()->new ClientServiceException("the customer not exist"));
     }
+
 }

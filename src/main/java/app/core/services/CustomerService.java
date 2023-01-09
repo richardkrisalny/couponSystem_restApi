@@ -18,12 +18,7 @@ import java.util.List;
 
 public class CustomerService extends ClientService{
     private int customerID;
-    /**
-     * check if the customer exist
-     * @param email customer email
-     * @param password customer password
-     * @return true if customer exist , else return false
-     */
+
     public boolean login(String email, String password) {
        if(customerRepo.findByEmailAndPassword(email, password)!=null){
            customerID=customerRepo.findByEmailAndPassword(email, password).getId();
@@ -32,39 +27,26 @@ public class CustomerService extends ClientService{
            return false;
        }
     }
-    /**
-     * buy coupon
-     * @param couponID coupon id
-     */
     public void purchase(int couponID) throws ClientServiceException {
-        Customer customer=customerRepo.findById(customerID).orElseThrow(()->new ClientServiceException("the customer is not exist"));
-        Coupon coupon = couponRepo.findById(couponID).orElseThrow(()->new ClientServiceException("the coupon is not exist"));
+        Customer customer=customerRepo.findById(customerID).orElseThrow(()->new ClientServiceException("the customer: "+customerID+" dose not exist"));
+        Coupon coupon = couponRepo.findById(couponID).orElseThrow(()->new ClientServiceException("the coupon: "+couponID+" dose not exist"));
         if(coupon.getAmount()>0&&coupon.getEndDate().isAfter(LocalDate.now())){
             for (Coupon coup:customer.getCoupons()) {
                 if(coup.getId()==coupon.getId())
-                   throw new ClientServiceException("the customer already have this coupon");
+                   throw new ClientServiceException("the customer: "+customerID+" already have this coupon");
             }
             customer.getCoupons().add(coupon);
             coupon.setAmount(coupon.getAmount()-1);
         }else {
-            throw new ClientServiceException("the amount or daed line is over");
+            throw new ClientServiceException("can't purchase the coupon: the amount is 0 or dead line is over");
         }
 
     }
 
-    /**
-     * get all coupons for customer
-     * @return list of coupons
-     */
     public List<Coupon> getCustomerCoupons(){
-            return customerRepo.findById(customerID).orElseThrow(()->new ClientServiceException("the coupon or customer is not exist")).getCoupons();
+            return customerRepo.findById(customerID).orElseThrow(()->new ClientServiceException("the customer "+customerID+" dose not exist")).getCoupons();
     }
 
-    /**
-     * get all coupon with specific category
-     * @param category the category
-     * @return list of coupons
-     */
     public List<Coupon>getCustomerCoupons(Category category){
         List<Coupon>couponsToReturn=new ArrayList<>();
         List<Coupon>coupons=getCustomerCoupons();
@@ -75,11 +57,6 @@ public class CustomerService extends ClientService{
         return couponsToReturn;
     }
 
-    /**
-     * get all customer coupons under some price
-     * @param maxPrice the maximum price
-     * @return list of coupons
-     */
     public List<Coupon>getCustomerCoupons(double maxPrice){
         List<Coupon>couponsToReturn=new ArrayList<>();
         List<Coupon>coupons=getCustomerCoupons();
@@ -90,12 +67,8 @@ public class CustomerService extends ClientService{
         return couponsToReturn;
     }
 
-    /**
-     * get the customer details
-     * @return customer
-     */
     public Customer getCustomerDetails(){
-            return customerRepo.findById(customerID).orElseThrow(()->new ClientServiceException("the customer not exist"));
+            return customerRepo.findById(customerID).orElseThrow(()->new ClientServiceException("the customer "+customerID+" dose not exist"));
     }
 
 }

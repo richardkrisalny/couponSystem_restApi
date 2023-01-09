@@ -23,23 +23,21 @@ class CouponSystemPart2ApplicationTests {
 	@Test
 	@Order(1)
 	void adminTest() {
-		System.out.println("--------------------- ADMIN TEST ------------------------");
-		RuntimeException e = Assertions.assertThrows(LoginException.class, () -> loginManager.login("alex", "5555", ClientType.ADMINISTRATOR));//wrong email and password
+		RuntimeException e = Assertions.assertThrows(LoginException.class, () -> loginManager.login("alex", "5555", ClientType.ADMINISTRATOR));
 		System.out.println(e);
-		e = Assertions.assertThrows(LoginException.class, () -> loginManager.login("admin@admin.com", "admin", ClientType.CUSTOMER));//wrong client type
+		e = Assertions.assertThrows(LoginException.class, () -> loginManager.login("admin@admin.com", "admin", ClientType.CUSTOMER));
 		System.out.println(e);
-		e = Assertions.assertThrows(LoginException.class, () -> loginManager.login("admin@admin.com", "5555", ClientType.ADMINISTRATOR));// wrong password
+		e = Assertions.assertThrows(LoginException.class, () -> loginManager.login("admin@admin.com", "5555", ClientType.ADMINISTRATOR));
 		System.out.println(e);
-		AdminService adminService = (AdminService) loginManager.login("admin@admin.com", "admin", ClientType.ADMINISTRATOR);//correct email and password
+		AdminService adminService = (AdminService) loginManager.login("admin@admin.com", "admin", ClientType.ADMINISTRATOR);
 		Assertions.assertNotNull(adminService);
 		adminService.addCompany(new Company(0, "Intel", "Intel@gmail.com", "123456", null));//add company
 		adminService.addCompany(new Company(0, "IBM", "IBM@gmail.com", "8520", null));//add company
 		adminService.addCompany(new Company(0, "Microsoft", "Microsoft@gmail.com", "0000", null));//add company
 		adminService.addCompany(new Company(0, "Monday", "Monday@gmail.com", "8888", null));//add company
 		Company company1 = adminService.addCompany(new Company(0, "Asus", "Asus@gmail.com", "3030", null));//add company
-		Company company2 = new Company(0, "Microsoft", "", "", null);//same name with company no 3
-		Company company3 = new Company(0, "", "Asus@gmail.com", "", null);//same email with company 5
-
+		Company company2 = new Company(0, "Microsoft", "test", "", null);//same name with company no 3
+		Company company3 = new Company(0, "test", "Asus@gmail.com", "", null);//same email with company 5
 		e = Assertions.assertThrows(ClientServiceException.class, () -> adminService.addCompany(company1));//add same company
 		System.out.println(e);
 		e = Assertions.assertThrows(ClientServiceException.class, () -> adminService.addCompany(company2));
@@ -55,11 +53,6 @@ class CouponSystemPart2ApplicationTests {
 		adminService.deleteCompany(1);
 		e = Assertions.assertThrows(ClientServiceException.class, () -> adminService.getOneCompany(1));//try to get not exist company
 		System.out.println(e);
-
-//		System.out.println("\nGet All Companies: " + adminService.getAllCompanies());
-//		System.out.println("Get Company number 3: " + adminService.getOneCompany(3));
-//		System.out.println();
-
 		adminService.addCustomer(new Customer(0, "Alex", "Levi", "alexLevi@gmail.com", "794613", null));
 		adminService.addCustomer(new Customer(0, "Moshe", "Cohen", "MosheCohen@gmail.com", ".....", null));
 		adminService.addCustomer(new Customer(0, "Valeria", "kavinovich", "ValeriaK@gmail.com", "10.05.1995", null));
@@ -75,9 +68,6 @@ class CouponSystemPart2ApplicationTests {
 		e = Assertions.assertThrows(ClientServiceException.class, () -> adminService.deleteCustomer(8));//try to delete customer das not exist
 		System.out.println(e);
 		adminService.deleteCustomer(5);
-//		System.out.println("Get All customers: " + adminService.getAllCustomers());
-//		System.out.println("Get customer number 1: " + adminService.getOneCustomer(1));
-//		System.out.println();
 	}
 
 	@Test
@@ -90,10 +80,8 @@ class CouponSystemPart2ApplicationTests {
 		System.out.println(e);
 		e = Assertions.assertThrows(LoginException.class, () -> loginManager.login("IBM@gmail.com", "5555", ClientType.ADMINISTRATOR));// wrong password
 		System.out.println(e);
-
 		CompanyService companyService = (CompanyService) loginManager.login("IBM@gmail.com", "8520", ClientType.COMPANY);//correct email and password
 		Assertions.assertNotNull(companyService);
-
 		companyService.addCoupon(new Coupon(0, 0, Category.CAMPING, "aaa", "+++", LocalDate.of(2022, 12, 05), LocalDate.of(2023, 12, 25), 20, 10, "img", null));
 		Coupon coupon1 = companyService.addCoupon(new Coupon(0, 0, Category.CLOTHING, "bbb", "+++", LocalDate.of(2022, 12, 05), LocalDate.of(2023, 12, 25), 20, 100, "img", null));
 		CompanyService finalCompanyService = companyService;
@@ -101,7 +89,6 @@ class CouponSystemPart2ApplicationTests {
 		System.out.println(e);
 		Coupon coupon = companyService.addCoupon(new Coupon(0, 0, Category.ELECTRICITY, "ccc", "+++", LocalDate.of(2022, 12, 05), LocalDate.of(2023, 12, 25), 20, 61, "img", null));
 		Assertions.assertEquals(2, coupon.getCompanyID(), "no Equals");
-
 		companyService = (CompanyService) loginManager.login("Monday@gmail.com", "8888", ClientType.COMPANY);
 		Assertions.assertNotNull(companyService);
 		companyService.addCoupon(new Coupon(0, 0, Category.CAMPING, "aaa", "+++", LocalDate.of(2022, 12, 05), LocalDate.of(2023, 12, 25), 20, 10, "img", null));
@@ -111,13 +98,9 @@ class CouponSystemPart2ApplicationTests {
 		Assertions.assertEquals(4, coupon.getCompanyID(), "no Equals");
 		e = Assertions.assertThrows(ClientServiceException.class, () -> finalCompanyService.updateCoupon(new Coupon(8, 0, Category.CLOTHING, "ttt", "---", LocalDate.of(2022, 12, 05), LocalDate.of(2023, 12, 25), 20, 100, "img", null)));
 		System.out.println(e);
-
 		e = Assertions.assertThrows(ClientServiceException.class, () -> finalCompanyService.deleteCoupon(4));
 		System.out.println(e);
-
 		companyService.updateCoupon(new Coupon(4, 0, Category.CAMPING, "ttt", "---", LocalDate.of(2022, 12, 05), LocalDate.of(2023, 12, 25), 20, 100, "img", null));
-//		System.out.println("Company 4 details: " + companyService.getCompanyDetails());
-//		System.out.println("the coupons of company 4: " + companyService.companyCoupons());
 		Assertions.assertEquals(2, companyService.companyCoupons(Category.CAMPING).size(), "no Equals");
 		Assertions.assertEquals(2, companyService.companyCoupons(80).size(), "no Equals");
 	}
@@ -131,7 +114,6 @@ class CouponSystemPart2ApplicationTests {
 		 e = Assertions.assertThrows(LoginException.class, () -> loginManager.login("alexLevi@gmail.com", "794613", ClientType.ADMINISTRATOR));//wrong email and password
 		System.out.println(e);
 		CustomerService customerService = (CustomerService) loginManager.login("alexLevi@gmail.com", "794613", ClientType.CUSTOMER);
-
 		customerService.purchase(1);
 		customerService.purchase(5);
 		customerService.purchase(3);
@@ -142,7 +124,6 @@ class CouponSystemPart2ApplicationTests {
 		System.out.println(e);
 		e = Assertions.assertThrows(ClientServiceException.class, () -> finalCustomerService.purchase(8));
 		System.out.println(e);
-
 		customerService = (CustomerService) loginManager.login("MosheCohen@gmail.com", ".....", ClientType.CUSTOMER);
 		customerService.purchase(1);
 		customerService.purchase(3);
@@ -152,25 +133,17 @@ class CouponSystemPart2ApplicationTests {
 		System.out.println(e);
 		e = Assertions.assertThrows(ClientServiceException.class, () -> finalCustomerService.purchase(1));//bayed before
 		System.out.println(e);
-
 		Assertions.assertEquals(18, customerService.getCustomerCoupons().get(0).getAmount(), "no Equals");
 		Assertions.assertEquals(2, customerService.getCustomerCoupons(Category.CAMPING).size(), "no Equals");
 		Assertions.assertEquals(1, customerService.getCustomerCoupons(45).size(), "no Equals");
-//		System.out.println("All customer coupons: " + customerService.getCustomerCoupons());
-//		System.out.println("Customer coupons in Sport: " + customerService.getCustomerCoupons(Category.CAMPING));
-//		System.out.println("Customer coupons under 45$: " + customerService.getCustomerCoupons(45));
-//		System.out.println("customer details: " + customerService.getCustomerDetails());
-
 		CompanyService companyService = (CompanyService) loginManager.login("IBM@gmail.com", "8520", ClientType.COMPANY);//correct email and password
 		Assertions.assertNotNull(companyService);
 		Assertions.assertEquals(4, customerService.getCustomerCoupons().size(), "no Equals");
-
 		e = Assertions.assertThrows(ClientServiceException.class, () -> companyService.deleteCoupon(4));//not yours
 		System.out.println(e);
 		companyService.deleteCoupon(3);
 		Assertions.assertEquals(3, customerService.getCustomerCoupons().size(), "no Equals");
 		Assertions.assertEquals(2, customerService.getCustomerCoupons(Category.CAMPING).size(), "no Equals");
-
 		AdminService adminService = (AdminService) loginManager.login("admin@admin.com", "admin", ClientType.ADMINISTRATOR);//correct email and password
 		Assertions.assertNotNull(adminService);
 		adminService.deleteCompany(2);
@@ -190,7 +163,6 @@ class CouponSystemPart2ApplicationTests {
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
-		//System.out.println(companyService.companyCoupons());
 		Assertions.assertEquals(3, companyService.companyCoupons().size(), "no Equals");
 	}
 }

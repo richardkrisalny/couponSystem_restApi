@@ -28,19 +28,21 @@ public class CompanyService extends ClientService{
           companyID = companyRepo.findByEmailAndPassword(email, password).getId();
           return true;
       }
-      else
+      else{
           return false;
+      }
+
     }
 
     /**
      * add coupon to database and check if the company have same coupon
      * @param coupon the coupon to add
      */
-    public void addCoupon(Coupon coupon) throws ClientServiceException {
+    public Coupon addCoupon(Coupon coupon) throws ClientServiceException {
         if(!couponRepo.existsByTitleAndCompanyID(coupon.getTitle(),companyID)){
             coupon.setCompanyID(companyID);
-            couponRepo.save(coupon);
             getCompanyDetails().getCoupons().add(coupon);
+            return couponRepo.save(coupon);
         }else{
             throw new ClientServiceException("the company: "+companyID+" have coupon with same title");
         }
@@ -51,11 +53,11 @@ public class CompanyService extends ClientService{
      * update coupon
      * @param coupon the coupon to update
      */
-    public void updateCoupon(Coupon coupon) throws ClientServiceException {
-        Optional<Coupon>opt=couponRepo.findById(coupon.getId());
-        if(opt.isPresent()&&!couponRepo.existsByTitleAndCompanyID(coupon.getTitle(),companyID)){
+    public Coupon updateCoupon(Coupon coupon) throws ClientServiceException {
+       Coupon coupon1= couponRepo.findById(coupon.getId()).orElseThrow(()->new ClientServiceException("the coupon not exist"));
+        if(coupon1.getCompanyID()==companyID){
             coupon.setCompanyID(companyID);
-            couponRepo.save(coupon);
+            return couponRepo.save(coupon);
         }else{
             throw new ClientServiceException("the company id is not the same or coupon not exist");
         }
@@ -66,7 +68,11 @@ public class CompanyService extends ClientService{
      * @param couponID coupon id to delete
      */
     public void deleteCoupon(int couponID) throws ClientServiceException {
-            couponRepo.delete(couponRepo.findById(couponID).orElseThrow(()->new ClientServiceException("the coupon not exist")));
+        Coupon coupon = couponRepo.findById(couponID).orElseThrow(()->new ClientServiceException("the coupon not exist"));
+        if(coupon.getCompanyID()==companyID)
+            couponRepo.delete(coupon);
+        else
+            throw new ClientServiceException("the coupon is not for tis company");
     }
 
     /**

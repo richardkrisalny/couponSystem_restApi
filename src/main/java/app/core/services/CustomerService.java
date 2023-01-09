@@ -46,6 +46,8 @@ public class CustomerService extends ClientService{
             }
             customer.getCoupons().add(coupon);
             coupon.setAmount(coupon.getAmount()-1);
+        }else {
+            throw new ClientServiceException("the amount or daed line is over");
         }
 
     }

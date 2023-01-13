@@ -19,26 +19,32 @@ import java.time.LocalDate;
 class CouponSystemPart2ApplicationTests {
 	@Autowired
 	private LoginManager loginManager;
-
 	@Test
 	@Order(1)
 	void adminTest() {
+		//Try logging in with an incorrect email and password
 		RuntimeException e = Assertions.assertThrows(LoginException.class, () -> loginManager.login("alex", "5555", ClientType.ADMINISTRATOR));
 		System.out.println(e);
+		//Try logging in with an incorrect client type
 		e = Assertions.assertThrows(LoginException.class, () -> loginManager.login("admin@admin.com", "admin", ClientType.CUSTOMER));
 		System.out.println(e);
+		//Try logging in with an incorrect password
 		e = Assertions.assertThrows(LoginException.class, () -> loginManager.login("admin@admin.com", "5555", ClientType.ADMINISTRATOR));
 		System.out.println(e);
+		//logging in
 		AdminService adminService = (AdminService) loginManager.login("admin@admin.com", "admin", ClientType.ADMINISTRATOR);
+		//check if logging in successful
 		Assertions.assertNotNull(adminService);
-		adminService.addCompany(new Company(0, "Intel", "Intel@gmail.com", "123456", null));//add company
-		adminService.addCompany(new Company(0, "IBM", "IBM@gmail.com", "8520", null));//add company
-		adminService.addCompany(new Company(0, "Microsoft", "Microsoft@gmail.com", "0000", null));//add company
-		adminService.addCompany(new Company(0, "Monday", "Monday@gmail.com", "8888", null));//add company
-		Company company1 = adminService.addCompany(new Company(0, "Asus", "Asus@gmail.com", "3030", null));//add company
-		Company company2 = new Company(0, "Microsoft", "test", "", null);//same name with company no 3
-		Company company3 = new Company(0, "test", "Asus@gmail.com", "", null);//same email with company 5
-		e = Assertions.assertThrows(ClientServiceException.class, () -> adminService.addCompany(company1));//add same company
+		//add companies
+		adminService.addCompany(new Company(0, "Intel", "Intel@gmail.com", "123456", null));//1
+		adminService.addCompany(new Company(0, "IBM", "IBM@gmail.com", "8520", null));//2
+		adminService.addCompany(new Company(0, "Microsoft", "Microsoft@gmail.com", "0000", null));//3
+		adminService.addCompany(new Company(0, "Monday", "Monday@gmail.com", "8888", null));//4
+		Company company1 = adminService.addCompany(new Company(0, "Asus", "Asus@gmail.com", "3030", null));//5
+		Company company2 = new Company(0, "Microsoft", "test", "", null);// 6 (same name with company 3)
+		Company company3 = new Company(0, "test", "Asus@gmail.com", "", null);// 7 (same email with company 5)
+		//try to
+		e = Assertions.assertThrows(ClientServiceException.class, () -> adminService.addCompany(company1));
 		System.out.println(e);
 		e = Assertions.assertThrows(ClientServiceException.class, () -> adminService.addCompany(company2));
 		System.out.println(e);
@@ -141,7 +147,8 @@ class CouponSystemPart2ApplicationTests {
 		Assertions.assertEquals(4, customerService.getCustomerCoupons().size(), "no Equals");
 		e = Assertions.assertThrows(ClientServiceException.class, () -> companyService.deleteCoupon(4));//not yours
 		System.out.println(e);
-		companyService.deleteCoupon(3);
+		companyService.updateCoupon(new Coupon(3, 0, Category.CAMPING, "test", "+++", LocalDate.of(2022, 12, 05), LocalDate.of(2023, 12, 25), 1, 10, "img", null));
+		Assertions.assertEquals("test",customerService.getCustomerCoupons().get(1).getTitle(), "no Equals");companyService.deleteCoupon(3);
 		Assertions.assertEquals(3, customerService.getCustomerCoupons().size(), "no Equals");
 		Assertions.assertEquals(2, customerService.getCustomerCoupons(Category.CAMPING).size(), "no Equals");
 		AdminService adminService = (AdminService) loginManager.login("admin@admin.com", "admin", ClientType.ADMINISTRATOR);//correct email and password
@@ -151,9 +158,10 @@ class CouponSystemPart2ApplicationTests {
 		Assertions.assertEquals(2, customerService.getCustomerCoupons().size(), "no Equals");
 		 e = Assertions.assertThrows(LoginException.class, () -> loginManager.login("IBM@gmail.com", "8520", ClientType.COMPANY));//wrong email and password
 		System.out.println(e);
+
 	}
 	@Test
-	@Order(3)
+	@Order(4)
 	void jobTest() {
 		CompanyService companyService = (CompanyService) loginManager.login("Monday@gmail.com", "8888", ClientType.COMPANY);
 		Assertions.assertNotNull(companyService);

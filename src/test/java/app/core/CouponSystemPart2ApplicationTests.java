@@ -259,9 +259,14 @@ class CouponSystemPart2ApplicationTests {
 	void jobTest() {
 		CompanyService companyService = (CompanyService) loginManager.login("Monday@gmail.com", "8888", ClientType.COMPANY);
 		Assertions.assertNotNull(companyService);
-		companyService.addCoupon(new Coupon(0, 0, Category.CAMPING, "a", "a", LocalDate.of(2022, 12, 5), LocalDate.of(2023, 1, 17), 1, 10, "img", null));
 		//check haw many coupons has
-		Assertions.assertEquals(5, companyService.companyCoupons().size(), "no Equals");
+		Assertions.assertEquals(4, companyService.companyCoupons().size(), "no Equals");
+		try {
+			Thread.sleep(15000);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		companyService.addCoupon(new Coupon(0, 0, Category.CAMPING, "a", "a", LocalDate.of(2022, 12, 5), LocalDate.of(2023, 1, 17), 1, 10, "img", null));
 		try {
 			Thread.sleep(15000);
 		} catch (InterruptedException e) {

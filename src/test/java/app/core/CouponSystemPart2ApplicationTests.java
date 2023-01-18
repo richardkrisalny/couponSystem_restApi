@@ -241,7 +241,6 @@ class CouponSystemPart2ApplicationTests {
 		Assertions.assertEquals(3, customerService2.getCustomerCoupons().size(), "no Equals");
 		Assertions.assertEquals(2, customerService2.getCustomerCoupons(Category.CAMPING).size(), "no Equals");
 		//login admin
-		System.out.println(companyService2.companyCoupons());
 		AdminService adminService = (AdminService) loginManager.login("admin@admin.com", "admin", ClientType.ADMINISTRATOR);
 		Assertions.assertNotNull(adminService);
 		//delete company 2 (and all coupons)

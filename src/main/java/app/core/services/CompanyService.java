@@ -58,7 +58,7 @@ public class CompanyService extends ClientService{
             coupon.setCustomers(coupon1.getCustomers());
             return couponRepo.save(coupon);
         }else{
-            throw new ClientServiceException("the companies id should by same: ("+coupon.getId()+" != "+coupon1.getId());
+            throw new ClientServiceException("the company: "+companyID+" can't update coupon: "+coupon.getId()+" because don't have it");
         }
     }
     /**

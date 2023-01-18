@@ -10,5 +10,4 @@ public class CouponSystemPart2Application {
 	public static void main(String[] args) {
 		SpringApplication.run(CouponSystemPart2Application.class, args);
 	}
-
 }

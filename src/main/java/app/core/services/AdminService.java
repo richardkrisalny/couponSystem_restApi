@@ -4,6 +4,7 @@ import app.core.entites.Company;
 import app.core.entites.Customer;
 import app.core.exeptions.ClientServiceException;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -17,8 +18,10 @@ import java.util.Objects;
 @Transactional
 @Scope("prototype")
 public class AdminService extends ClientService {
-    public static final String EMAIL = "admin@admin.com";
-    public static final String PASSWORD = "admin";
+    @Value("${admin.email}")
+    private String EMAIL;
+    @Value("${admin.password}")
+    private String PASSWORD;
     /**
      *
      * @param email the email of the admin
@@ -94,7 +97,7 @@ public class AdminService extends ClientService {
         if(!customerRepo.existsByEmail(customer.getEmail())){
            return customerRepo.save(customer);
         }else{
-            throw new ClientServiceException("the customer: "+customer.getId()+" already exist");
+            throw new ClientServiceException("can't add: customer with email : "+customer.getEmail()+" already exist");
         }
     }
     /**

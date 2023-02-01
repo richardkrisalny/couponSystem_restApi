@@ -1,8 +1,10 @@
 package app.core.entites;
-
-import jakarta.persistence.*;
+import app.core.jwt.ClientType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +14,7 @@ import java.util.List;
 @EqualsAndHashCode(of="id")
 @Entity
 @ToString(exclude = "coupons")
-public class Company {
+public class Company{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private int id;
@@ -21,5 +23,6 @@ public class Company {
     private String password;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "company_id")
+    @JsonIgnore
    private List<Coupon> coupons=new ArrayList<>();
 }

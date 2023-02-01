@@ -3,10 +3,10 @@ package app.core.services;
 import app.core.entites.Company;
 import app.core.entites.Customer;
 import app.core.exeptions.ClientServiceException;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Objects;
 /**
@@ -16,21 +16,8 @@ import java.util.Objects;
  */
 @Service
 @Transactional
-@Scope("prototype")
 public class AdminService extends ClientService {
-    @Value("${admin.email}")
-    private String EMAIL;
-    @Value("${admin.password}")
-    private String PASSWORD;
-    /**
-     *
-     * @param email the email of the admin
-     * @param password the password of the admin
-     * @return true if the email and password match the predefined admin credentials, false otherwise
-     */
-    public boolean login(String email, String password) {
-        return (EMAIL.equals(email) && PASSWORD.equals(password));
-    }
+
 
     /**
      * Adds a new company to the database

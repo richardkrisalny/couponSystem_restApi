@@ -4,33 +4,16 @@ import app.core.entites.Category;
 import app.core.entites.Coupon;
 import app.core.entites.Customer;
 import app.core.exeptions.ClientServiceException;
-import jakarta.transaction.Transactional;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Transactional
-@Scope("prototype")
-
 public class CustomerService extends ClientService{
-    private int customerID;
-    /**
-     * Login as customer with provided email and password
-     * @param email customer email
-     * @param password customer password
-     * @return true if login was successful, false otherwise
-     */
-    public boolean login(String email, String password) {
-       if(customerRepo.findByEmailAndPassword(email, password)!=null){
-           customerID=customerRepo.findByEmailAndPassword(email, password).getId();
-           return true;
-       }else {
-           return false;
-       }
-    }
     /**
      * Purchase a coupon
      * @param couponID coupon ID
@@ -38,9 +21,9 @@ public class CustomerService extends ClientService{
      * 		- the customer not exist
      * 		- the coupon not exist
      * 		- the customer already have this coupon
-     * 		- the coupon amount is 0 or dead line is over
+     * 		- the coupon amount is 0 or deadline is over
      */
-    public void purchase(int couponID) throws ClientServiceException {
+    public void purchase(int couponID,int customerID) throws ClientServiceException {
         Customer customer=customerRepo.findById(customerID).orElseThrow(()->new ClientServiceException("the customer: "+customerID+" dose not exist"));
         Coupon coupon = couponRepo.findById(couponID).orElseThrow(()->new ClientServiceException("the coupon: "+couponID+" dose not exist"));
         if(coupon.getAmount()>0&&coupon.getEndDate().isAfter(LocalDate.now())){
@@ -60,7 +43,7 @@ public class CustomerService extends ClientService{
      @throws ClientServiceException when the customer with the given customerID does not exist in the repository
      @return A List of Coupon objects
      */
-    public List<Coupon> getCustomerCoupons(){
+    public List<Coupon> getCustomerCoupons(int customerID){
             return customerRepo.findById(customerID).orElseThrow(()->new ClientServiceException("the customer "+customerID+" dose not exist")).getCoupons();
     }
     /**
@@ -69,9 +52,9 @@ public class CustomerService extends ClientService{
      @throws ClientServiceException when the customer with the given customerID does not exist in the repository
      @return A List of Coupon objects
      */
-    public List<Coupon>getCustomerCoupons(Category category){
+    public List<Coupon>getCustomerCoupons(Category category,int customerID){
         List<Coupon>couponsToReturn=new ArrayList<>();
-        List<Coupon>coupons=getCustomerCoupons();
+        List<Coupon>coupons=getCustomerCoupons(customerID);
         for (int i = 0; i < coupons.size(); i++) {
             if(coupons.get(i).getCategory()==category)
                 couponsToReturn.add(coupons.get(i));
@@ -84,9 +67,9 @@ public class CustomerService extends ClientService{
      @throws ClientServiceException when the customer with the given customerID does not exist in the repository
      @return A List of Coupon objects
      */
-    public List<Coupon>getCustomerCoupons(double maxPrice){
+    public List<Coupon>getCustomerCoupons(double maxPrice,int customerID){
         List<Coupon>couponsToReturn=new ArrayList<>();
-        List<Coupon>coupons=getCustomerCoupons();
+        List<Coupon>coupons=getCustomerCoupons(customerID);
         for (int i = 0; i < coupons.size(); i++) {
             if(coupons.get(i).getPrice()<maxPrice)
                 couponsToReturn.add(coupons.get(i));
@@ -98,7 +81,7 @@ public class CustomerService extends ClientService{
      @throws ClientServiceException when the customer with the given customerID does not exist in the repository
      @return A Customer object
      */
-    public Customer getCustomerDetails(){
+    public Customer getCustomerDetails(int customerID){
             return customerRepo.findById(customerID).orElseThrow(()->new ClientServiceException("the customer "+customerID+" dose not exist"));
     }
 

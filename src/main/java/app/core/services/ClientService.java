@@ -13,8 +13,4 @@ public abstract class ClientService {
     protected CouponRepo couponRepo;
     @Autowired
     protected CustomerRepo customerRepo;
-
-    public boolean login(String email, String password) {
-        return false;
-    }
 }
